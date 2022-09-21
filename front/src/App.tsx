@@ -9,26 +9,16 @@ import {
 } from '@chakra-ui/react'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import './App.css'
-
-type Todo = {
-  id: number
-  title: string
-  isDone: number
-}
+import { fetchAllTodos } from './redux/todoSlice'
+import { AppDispatch, RootState, TodoItem } from './redux/types'
 
 export const App = () => {
-  // const dispatch = useDispatch<AppDispatch>()
-  // const todos: TodoItem[] = useSelector(
-  //   (state: RootState) => state.todos.todoItems,
-  // )
-  const [todos, setTodos] = useState<Todo[]>([
-    {
-      id: 0,
-      title: '',
-      isDone: 0,
-    },
-  ])
+  const dispatch = useDispatch<AppDispatch>()
+  const todos: TodoItem[] = useSelector(
+    (state: RootState) => state.todos.todoItems,
+  )
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
@@ -36,10 +26,9 @@ export const App = () => {
       .get('http://localhost:8000/api/todo/')
       .then((response) => {
         console.log(response)
-        setTodos(response.data)
       })
       .catch((error) => console.log(error))
-    // dispatch(fetchAllTodos())
+    dispatch(fetchAllTodos())
   }, [])
 
   const [title, setTitle] = useState<string>('')
@@ -57,7 +46,6 @@ export const App = () => {
         isDone: isDone,
       })
       .then((response) => {
-        setTodos([...todos, response.data])
         setLoading(false)
       })
       .then(() => {
@@ -74,7 +62,6 @@ export const App = () => {
     axios
       .delete(`http://localhost:8000/api/todo/${id}`)
       .then(() => {
-        setTodos(todos.filter((todo) => todo.id !== id))
         setLoading(false)
       })
       .catch((error) => console.log(error))
@@ -89,7 +76,6 @@ export const App = () => {
       })
       .then((response) => {
         console.log(response.data)
-        setTodos(response.data)
         setLoading(false)
       })
       .then(() => {
