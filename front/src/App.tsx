@@ -1,12 +1,4 @@
-import {
-  Button,
-  Checkbox,
-  HStack,
-  Input,
-  Spinner,
-  Stack,
-  Text,
-} from '@chakra-ui/react'
+import { Button, Checkbox, HStack, Input, Stack, Text } from '@chakra-ui/react'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -19,15 +11,8 @@ export const App = () => {
   const todos: TodoItem[] = useSelector(
     (state: RootState) => state.todos.todoItems,
   )
-  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    axios
-      .get('http://localhost:8000/api/todo/')
-      .then((response) => {
-        console.log(response)
-      })
-      .catch((error) => console.log(error))
     dispatch(fetchAllTodos())
   }, [])
 
@@ -39,18 +24,16 @@ export const App = () => {
   const [isDone, setIsDone] = useState<number>(0)
 
   const createNewTodo = (): void => {
-    setLoading(true)
     axios
       .post('http://localhost:8000/api/todo/', {
         title: title,
         isDone: isDone,
       })
-      .then((response) => {
-        setLoading(false)
-      })
+      .then((response) => {})
       .then(() => {
         setIsDone(0)
         setTitle('')
+        window.location.reload()
       })
       .catch((error) => {
         console.log(error)
@@ -58,17 +41,15 @@ export const App = () => {
   }
 
   const deleteTodo = (id: number) => {
-    setLoading(true)
     axios
       .delete(`http://localhost:8000/api/todo/${id}`)
       .then(() => {
-        setLoading(false)
+        window.location.reload()
       })
       .catch((error) => console.log(error))
   }
 
   const modifyIsDone = (id: number, title: string) => {
-    setLoading(true)
     axios
       .patch(`http://localhost:8000/api/todo/${id}`, {
         title: title,
@@ -76,21 +57,13 @@ export const App = () => {
       })
       .then((response) => {
         console.log(response.data)
-        setLoading(false)
       })
       .then(() => {
         setIsDone(0)
         setTitle('')
+        window.location.reload()
       })
       .catch((error) => console.log(error))
-  }
-
-  if (loading) {
-    return (
-      <Stack alignItems={'center'} mt={20}>
-        <Spinner size="xl" />
-      </Stack>
-    )
   }
 
   return (
