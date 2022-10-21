@@ -18,10 +18,6 @@ type Todo = {
 }
 
 export const App = () => {
-  // const dispatch = useDispatch<AppDispatch>()
-  // const todos: TodoItem[] = useSelector(
-  //   (state: RootState) => state.todos.todoItems,
-  // )
   const [todos, setTodos] = useState<Todo[]>([
     {
       id: 0,
@@ -39,7 +35,6 @@ export const App = () => {
         setTodos(response.data)
       })
       .catch((error) => console.log(error))
-    // dispatch(fetchAllTodos())
   }, [])
 
   const [title, setTitle] = useState<string>('')
